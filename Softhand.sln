@@ -1,24 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11010.61 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softhand", "src\Softhand\Softhand.csproj", "{FDB0FB1C-3216-47B7-85EC-CA3067427BAF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sentry", "Sentry", "{BDAFD26B-C1D0-4527-B55E-C97EAEE7183C}"
-	ProjectSection(SolutionItems) = preProject
-		Sentry\.env = Sentry\.env
-		Sentry\docker-compose.yml = Sentry\docker-compose.yml
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sentry", "sentry", "{4FA9E3C6-071D-4EEB-A487-7DF9F9D5B019}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{D221A9D3-E7DA-4406-A214-FE1C2F7082F2}"
-	ProjectSection(SolutionItems) = preProject
-		Sentry\sentry\config\sentry.conf.py = Sentry\sentry\config\sentry.conf.py
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{ED8CF65F-FAD3-4AD6-A2EA-31D8A4052902}"
 EndProject
@@ -63,8 +50,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FDB0FB1C-3216-47B7-85EC-CA3067427BAF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{4FA9E3C6-071D-4EEB-A487-7DF9F9D5B019} = {BDAFD26B-C1D0-4527-B55E-C97EAEE7183C}
-		{D221A9D3-E7DA-4406-A214-FE1C2F7082F2} = {4FA9E3C6-071D-4EEB-A487-7DF9F9D5B019}
 		{13B629F1-BCEE-4D7C-A3E2-EB4CD42068BC} = {ED8CF65F-FAD3-4AD6-A2EA-31D8A4052902}
 		{6B35788D-A5C7-41FA-A95B-FAA330E3800B} = {ED8CF65F-FAD3-4AD6-A2EA-31D8A4052902}
 	EndGlobalSection
