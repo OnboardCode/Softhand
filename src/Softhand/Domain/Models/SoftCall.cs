@@ -4,8 +4,8 @@ namespace Softhand.Domain.Models
 {
     public class SoftCall(SoftAccount acc, int call_id) : Call(acc, call_id)
     {
-        public VideoWindow VudeoWindow { get; set; } = null;
-        public VideoPreview VideoPreview { get; set; } = null;
+        public VideoWindow VudeoWindow { get; set; } = null!;
+        public VideoPreview VideoPreview { get; set; } = null!;
 
         public override void onCallState(OnCallStateParam prm)
         {
@@ -26,7 +26,7 @@ namespace Softhand.Domain.Models
             // Should not delete this call instance (self) in this context,
             // so the Monitor should manage this call instance deletion
             // out of this callback context.
-            SoftApp.Monitor.NotifyCallState(this);
+            SoftApp.Monitor?.NotifyCallState(this);
         }
 
         public override void onCallMediaState(OnCallMediaStateParam prm)
@@ -75,7 +75,7 @@ namespace Softhand.Domain.Models
                 }
             }
 
-            SoftApp.Monitor.NotifyCallMediaState(this);
+            SoftApp.Monitor?.NotifyCallMediaState(this);
         }
     }
 }

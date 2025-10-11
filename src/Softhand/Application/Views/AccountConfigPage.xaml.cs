@@ -6,7 +6,7 @@ public partial class AccountConfigPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
-        viewModel.Init(SoftApp.CurrentConfig);
+        viewModel.InitCommand.Execute(SoftApp.CurrentConfig!);
     }
 }
 

@@ -8,5 +8,5 @@ namespace Softhand.Infrastructure.Services.Concrete;
 
 public class NavigationContextService<T> : INavigationContextService<T> where T : class
 {
-    public T Payload { get; set; }
+    public T? Payload { get; set; }
 }

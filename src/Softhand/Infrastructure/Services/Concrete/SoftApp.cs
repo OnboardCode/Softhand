@@ -1,26 +1,18 @@
 ﻿namespace Softhand.Infrastructure.Services.Concrete;
 public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
 {
-    public static ISoftMonitor Monitor { get; set; }
+    public static ISoftMonitor? Monitor { get; set; }
     public static Endpoint Endpoint { get; set; } = new();
     public static SoftCall CurrentCall { get; set; } = null!;
-    public static SoftAccount Account { get; set; }
-    public static SoftConfig CurrentConfig { get; set; }
-    public static CallInfo LastCallInfo { get; set; }
+    public static SoftAccount? Account { get; set; }
+    public static SoftConfig? CurrentConfig { get; set; }
+    public static CallInfo ?LastCallInfo { get; set; }
     public static SoftLogWriter LogWriter { get; set; } = new();
     public EpConfig EpConfig { get; set; } = new EpConfig();
     public TransportConfig SipTpConfig { get; set; } = new TransportConfig();
-    public static AccountCallConfig AccountCallConfig { get; set; }
-    public static AccountMediaConfig AccountMediaConfig { get; set; }
-    public static AccountPresConfig AccountPresConfig { get; set; }
-    public static AccountRegConfig AccountRegConfig { get; set; }
-    public static AccountSipConfig AccountSipConfig { get; set; }
-    public static AccountVideoConfig AccountVideoConfig { get; set; }
-    public static CodecOpusConfig CodecOpusConfig { get; set; }
-    public static MediaConfig MediaConfig { get; set; }
-    public static CodecLyraConfig CodecLyraConfig { get; set; } 
+ 
 
-    public string ConfigPath { get; set; } 
+    public string ConfigPath { get; set; } = string.Empty;
 
     private const string pjsipConfigFIle = "Softhand.json";
     private const int SIP_PORT = 5060;
@@ -34,7 +26,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
         /* Create endpoint */
         try
         {
-            Dispatcher.GetForCurrentThread().Dispatch(Endpoint.libCreate);
+            Dispatcher.GetForCurrentThread()?.Dispatch(Endpoint.libCreate);
         }
         catch (Exception e)
         {
@@ -47,7 +39,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
         ConfigPath = System.IO.Path.Combine(app_path, pjsipConfigFIle);
         if (File.Exists(ConfigPath))
         {
-            Dispatcher.GetForCurrentThread().Dispatch(() => LoadConfig(ConfigPath));
+            Dispatcher.GetForCurrentThread()?.Dispatch(() => LoadConfig(ConfigPath));
         }
         else
         {
@@ -71,7 +63,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
         /* Init endpoint */
         try
         {
-            Dispatcher.GetForCurrentThread().Dispatch(() => Endpoint.libInit(EpConfig));
+            Dispatcher.GetForCurrentThread()?.Dispatch(() => Endpoint.libInit(EpConfig));
         }
         catch (Exception)
         {
@@ -81,7 +73,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
         /* Create transports. */
         try
         {
-            Dispatcher.GetForCurrentThread().Dispatch(() => Endpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_UDP,
+            Dispatcher.GetForCurrentThread()?.Dispatch(() => Endpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_UDP,
                                SipTpConfig));
         }
         catch (Exception e)
@@ -91,7 +83,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
 
         try
         {
-            Dispatcher.GetForCurrentThread().Dispatch(() => Endpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_TCP,
+            Dispatcher.GetForCurrentThread()?.Dispatch(() => Endpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_TCP,
                                SipTpConfig));
         }
         catch (Exception e)
@@ -102,7 +94,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
         try
         {
             SipTpConfig.port = SIP_PORT + 1;
-            Dispatcher.GetForCurrentThread().Dispatch(() => Endpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_TLS,
+            Dispatcher.GetForCurrentThread()?.Dispatch(() => Endpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_TLS,
                                SipTpConfig));
         }
         catch (Exception e)
@@ -125,7 +117,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
         Account = new SoftAccount(CurrentConfig.AccountConfig);
         try
         {
-            Dispatcher.GetForCurrentThread().Dispatch(() =>
+            Dispatcher.GetForCurrentThread()?.Dispatch(() =>
             {
                 Account.create(CurrentConfig.AccountConfig);
 
@@ -145,7 +137,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
         /* Start. */
         try
         {
-            Dispatcher.GetForCurrentThread().Dispatch(Endpoint.libStart);
+            Dispatcher.GetForCurrentThread()?.Dispatch(Endpoint.libStart);
         }
         catch (Exception e)
         {
@@ -167,7 +159,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
              * registered thread (by GC?). 
              */
             Endpoint.Dispose();
-            Endpoint = null;
+            Endpoint = null!;
         }
         catch (Exception e)
         {
@@ -185,15 +177,15 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
             ContainerNode root = json.getRootContainer();
 
             /* Read endpoint config */
-            CurrentConfig.EpConfig.readObject(root);
+            CurrentConfig?.EpConfig.readObject(root);
 
             /* Read transport config */
             ContainerNode tpNode = root.readContainer("SipTransport");
-            CurrentConfig.SipTpConfig.readObject(tpNode);
+            CurrentConfig?.SipTpConfig.readObject(tpNode);
 
             /* Read Account config */
             ContainerNode accNode = root.readContainer("SoftConfig");
-            CurrentConfig.AccountConfig.readObject(accNode);
+            CurrentConfig?.AccountConfig.readObject(accNode);
 
             /* Force delete json now */
             json.Dispose();
@@ -208,7 +200,7 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
     {
         SoftConfig tmpAccCfg = new()
         {
-            AccountConfig = Account.Configuration
+            AccountConfig = Account!.Configuration
         };
 
         tmpAccCfg.BuddyConfigs.Clear();
@@ -228,16 +220,16 @@ public class SoftApp(ILogger<SoftApp> _logger) : ISoftApp
             JsonDocument json = new();
 
             /* Write endpoint config */
-            json.writeObject(CurrentConfig.EpConfig);
+            json.writeObject(CurrentConfig?.EpConfig);
 
             /* Write transport config */
             ContainerNode tpNode = json.writeNewContainer("SipTransport");
-            CurrentConfig.SipTpConfig.writeObject(tpNode);
+            CurrentConfig?.SipTpConfig.writeObject(tpNode);
 
             /* Write Account configs */
             BuildAccountConfigs();
             ContainerNode accNode = json.writeNewContainer("SoftConfig");
-            CurrentConfig.WriteObject(accNode);
+            CurrentConfig?.WriteObject(accNode);
 
             /* Save file */
             json.saveFile(filename);

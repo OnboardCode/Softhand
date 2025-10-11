@@ -2,5 +2,5 @@
 
 public interface INavigationContextService<T> where T : class
 {
-    T Payload { get; set; }
+    T? Payload { get; set; }
 }

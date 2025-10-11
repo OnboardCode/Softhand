@@ -14,15 +14,15 @@ using UIKit;
 
 namespace Softhand.Platforms.iOS;
 
-public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper = null) : ViewHandler<CallPage, UIView>(mapper, commandMapper)
+public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper = null!) : ViewHandler<CallPage, UIView>(mapper, commandMapper)
 {
-    UIView incomingVideoView;
-    UIButton acceptCallButton;
-    UIButton hangupCallButton;
-    UILabel peerLabel;
-    UILabel callStatusLabel;
+    UIView? incomingVideoView;
+    UIButton? acceptCallButton;
+    UIButton? hangupCallButton;
+    UILabel? peerLabel;
+    UILabel? callStatusLabel;
     private static CallInfo LastCallInfo { get; set; } = new CallInfo();
-    private CallPage callPage;
+    private CallPage? callPage;
 
     protected override UIView CreatePlatformView()
     {
@@ -123,7 +123,7 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
 
                 if (SoftApp.CurrentCall?.VudeoWindow != null)
                 {
-                    incomingVideoView.Hidden = false;
+                    incomingVideoView!.Hidden = false;
                 }
             });
 
@@ -145,7 +145,7 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
         }
         else
         {
-            incomingVideoView.Hidden = true;
+            incomingVideoView!.Hidden = true;
         }
     }
 
@@ -161,12 +161,12 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
 
     void SetupEventHandlers()
     {
-        acceptCallButton.TouchUpInside += (sender, e) =>
+        acceptCallButton!.TouchUpInside += (sender, e) =>
         {
             AcceptCall();
         };
 
-        hangupCallButton.TouchUpInside += (sender, e) =>
+        hangupCallButton!.TouchUpInside += (sender, e) =>
         {
             HangupCall();
         };
@@ -187,7 +187,7 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
             System.Diagnostics.Debug.WriteLine(@"ERROR: ", ex.Message);
         }
 
-        acceptCallButton.Hidden = true;
+        acceptCallButton!.Hidden = true;
     }
 
     private static void HangupCall()
@@ -215,15 +215,15 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
 
         if (ci == null)
         {
-            acceptCallButton.Hidden = true;
-            hangupCallButton.SetTitle("OK", UIControlState.Normal);
-            callStatusLabel.Text = "Call disconnected";
+            acceptCallButton!.Hidden = true;
+            hangupCallButton?.SetTitle("OK", UIControlState.Normal);
+            callStatusLabel!.Text = "Call disconnected";
             return;
         }
 
         if (ci.role == pjsip_role_e.PJSIP_ROLE_UAC)
         {
-            acceptCallButton.Hidden = true;
+            acceptCallButton!.Hidden = true;
         }
 
         if (ci.state < pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED)
@@ -234,21 +234,21 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
             }
             else
             {
-                hangupCallButton.SetTitle("Cancel", UIControlState.Normal);
+                hangupCallButton?.SetTitle("Cancel", UIControlState.Normal);
                 call_state = ci.stateText;
             }
         }
         else if (ci.state >= pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED)
         {
-            acceptCallButton.Hidden = true;
+            acceptCallButton!.Hidden = true;
             call_state = ci.stateText;
             if (ci.state == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED)
             {
-                hangupCallButton.SetTitle("Hangup", UIControlState.Normal);
+                hangupCallButton!.SetTitle("Hangup", UIControlState.Normal);
             }
             else if (ci.state == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED)
             {
-                hangupCallButton.SetTitle("OK", UIControlState.Normal);
+                hangupCallButton!.SetTitle("OK", UIControlState.Normal);
                 call_state = "Call disconnected: " + ci.lastReason;
             }
             if (ci.state == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED)
@@ -257,8 +257,8 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
             }
         }
 
-        peerLabel.Text = ci.remoteUri;
-        callStatusLabel.Text = call_state;
+        peerLabel!.Text = ci.remoteUri;
+        callStatusLabel!.Text = call_state;
     }
 
     private void UpdateVideoWindow(bool show)
@@ -293,11 +293,11 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
                     { 
                         if (inView.Superview != incomingVideoView)
                         {
-                            incomingVideoView.AddSubview(inView);
+                            incomingVideoView!.AddSubview(inView);
                         }
 
                         inView.ContentMode = UIViewContentMode.ScaleAspectFit;
-                        inView.Frame = incomingVideoView.Bounds;
+                        inView.Frame = incomingVideoView!.Bounds;
                         inView.Center = incomingVideoView.Center;
                     }
                     catch (Exception ex)

@@ -5,7 +5,7 @@ public class SipStatusColorConverter : IMultiValueConverter
 {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        var theme = SoftApplication.Current.RequestedTheme;
+        var theme = SoftApplication.Current!.RequestedTheme;
         var resources = SoftApplication.Current.Resources;
         var unespecifiedColor = theme == AppTheme.Dark ? Colors.DarkGray : Colors.LightGray;
 

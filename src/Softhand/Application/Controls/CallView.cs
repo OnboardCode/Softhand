@@ -1,8 +1,11 @@
-﻿namespace Softhand.Application.Controls;
+﻿using Microsoft.Maui.Controls;
+
+namespace Softhand.Application.Controls;
 
 public class CallView : ContentView
 {
-    public CallView()
+    public CallView() : base()
     {
+        
     }
 }

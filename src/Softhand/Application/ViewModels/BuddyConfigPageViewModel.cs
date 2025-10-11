@@ -29,21 +29,24 @@ public partial class BuddyConfigPageViewModel : BaseViewModel
         }
         else
         {
-            this.InitCommand.Execute(_buddyContext.Payload.Configuration);
+            this.InitCommand.Execute(_buddyContext.Payload!.Configuration);
         }
     }
 
     [RelayCommand]
-    private void Init(BuddyConfig budCfg) 
+    private async Task Init(BuddyConfig budCfg) 
     {
-        this._logger.LogInformation("Initing Buddy Configuration");
-        BuddyConfig = budCfg;
+        await Task.Run(() =>
+        {
+            this._logger.LogInformation("Initing Buddy Configuration");
+            BuddyConfig = budCfg;
+        });
     }
 
     [RelayCommand]
     private void OnAppearing()
     {
-        this.InitCommand.Execute(this._buddyContext.Payload.Configuration);
+        this.InitCommand.Execute(this._buddyContext.Payload!.Configuration);
     }
 
     [RelayCommand]

@@ -37,7 +37,7 @@ public class SoftAccount(AccountConfig config) : Account
                 }
         }
 
-        return bud;
+        return bud!;
     }
 
     public void DelBuddy(SoftBuddy buddy)
@@ -52,14 +52,14 @@ public class SoftAccount(AccountConfig config) : Account
         Console.WriteLine("***" + (ai.regIsActive ? "" : "Un") +
                           "Register: code=" + prm.code);
 
-        SoftApp.Monitor.NotifyRegState((int)prm.code, prm.reason, prm.expiration);
+        SoftApp.Monitor?.NotifyRegState((int)prm.code, prm.reason, prm.expiration);
     }
 
     override public void onIncomingCall(OnIncomingCallParam prm)
     {
         Console.WriteLine("======== Incoming call ======== ");
         SoftCall call = new(this, prm.callId);
-        SoftApp.Monitor.NotifyIncomingCall(call);
+        SoftApp.Monitor?.NotifyIncomingCall(call);
     }
 
     override public void onInstantMessage(OnInstantMessageParam prm)

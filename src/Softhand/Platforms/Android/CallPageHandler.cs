@@ -7,39 +7,41 @@ using Android.Views;
 using Android.Widget;
 using CommunityToolkit.Mvvm.Messaging;
 using Java.Interop;
+using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Handlers;
+using pjsua2maui.pjsua2;
+using Softhand.Application.Views;
+using Softhand.Infrastructure.Messages;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using Button = global::Android.Widget.Button;
 namespace Softhand.Platforms.Android;
 
-public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper = null) : ViewHandler<CallPage, ViewGroup>(mapper, commandMapper) 
+public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper = null!) : ViewHandler<CallPage, ViewGroup>(mapper, commandMapper) 
 {
-    Button acceptCallButton;
-    Button hangupCallButton;
-    TextView peerTxt;
-    TextView statusTxt;
+    Button? acceptCallButton;
+    Button? hangupCallButton;
+    TextView? peerTxt;
+    TextView? statusTxt;
     private static CallInfo LastCallInfo { get; set; } = new CallInfo();
-    private CallPage callPage;
-    SurfaceView incomingView; 
+    private CallPage? callPage;
+    SurfaceView? incomingView; 
 
-    [DllImport("android")]
-#pragma warning disable SYSLIB1054 // Use 'LibraryImportAttribute' em vez de 'DllImportAttribute' para gerar código de marshalling P/Invoke no tempo de compilação
+    [DllImport("android")] 
     private static extern IntPtr ANativeWindow_fromSurface(IntPtr jni, IntPtr surface);
-#pragma warning restore SYSLIB1054 // Use 'LibraryImportAttribute' em vez de 'DllImportAttribute' para gerar código de marshalling P/Invoke no tempo de compilação
-
+ 
     protected override ViewGroup CreatePlatformView()
     {
-        var activity = Context as Activity;
+        var activity = this.Context as Activity;
         var root = new FrameLayout(Context);
 
-        var view = activity.LayoutInflater.Inflate(Resource.Layout.activity_call, root, false);
+        var view = activity?.LayoutInflater.Inflate(Resource.Layout.activity_call, root, false);
 
-        incomingView = view.FindViewById<SurfaceView>(Resource.Id.incomingVideoView);
+        incomingView = view!.FindViewById<SurfaceView>(Resource.Id.incomingVideoView);
 
-        incomingView.Holder.AddCallback(new SurfaceCallback(this));
+        incomingView?.Holder?.AddCallback(new SurfaceCallback(this));
 
         peerTxt = view.FindViewById<TextView>(Resource.Id.peerTxt);
         statusTxt = view.FindViewById<TextView>(Resource.Id.statusTxt);
@@ -88,7 +90,7 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
                 LastCallInfo = info.Value;
                 if (SoftApp.CurrentCall?.VudeoWindow != null)
                 {
-                    incomingView.Visibility = ViewStates.Visible;
+                    incomingView!.Visibility = ViewStates.Visible;
                 }
             });
 
@@ -110,7 +112,7 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
         }
         else
         {
-            incomingView.Visibility = ViewStates.Gone;
+            incomingView!.Visibility = ViewStates.Gone;
         }
     }
 
@@ -126,11 +128,11 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
 
     void SetupEventHandlers()
     {
-        acceptCallButton.Click += AcceptCallButtonTapped;
-        hangupCallButton.Click += HangupCallButtonTapped;
+        acceptCallButton!.Click += AcceptCallButtonTapped;
+        hangupCallButton!.Click += HangupCallButtonTapped;
     }
 
-    void AcceptCallButtonTapped(object sender, EventArgs e)
+    void AcceptCallButtonTapped(object? sender, EventArgs e)
     {
         CallOpParam prm = new()
         {
@@ -145,10 +147,10 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
             System.Diagnostics.Debug.WriteLine(@"ERROR: ", ex.Message);
         }
 
-        acceptCallButton.Visibility = ViewStates.Gone;
+        acceptCallButton!.Visibility = ViewStates.Gone;
     }
 
-    static void HangupCallButtonTapped(object sender, EventArgs e)
+    static void HangupCallButtonTapped(object? sender, EventArgs e)
     {
         if (SoftApp.CurrentCall != null)
         {
@@ -210,15 +212,15 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
 
         if (ci == null)
         {
-            acceptCallButton.Visibility = ViewStates.Gone;
-            hangupCallButton.Text = "OK";
-            statusTxt.Text = "Call disconnected";
+            acceptCallButton!.Visibility = ViewStates.Gone;
+            hangupCallButton!.Text = "OK";
+            statusTxt!.Text = "Call disconnected";
             return;
         }
 
         if (ci.role == pjsip_role_e.PJSIP_ROLE_UAC)
         {
-            acceptCallButton.Visibility = ViewStates.Gone;
+            acceptCallButton!.Visibility = ViewStates.Gone;
         }
 
         if (ci.state < pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED)
@@ -229,21 +231,21 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
             }
             else
             {
-                hangupCallButton.Text = "Cancel";
+                hangupCallButton!.Text = "Cancel";
                 call_state = ci.stateText;
             }
         }
         else if (ci.state >= pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED)
         {
-            acceptCallButton.Visibility = ViewStates.Gone;
+            acceptCallButton!.Visibility = ViewStates.Gone;
             call_state = ci.stateText;
             if (ci.state == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED)
             {
-                hangupCallButton.Text = "Hangup";
+                hangupCallButton!.Text = "Hangup";
             }
             else if (ci.state == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED)
             {
-                hangupCallButton.Text = "OK";
+                hangupCallButton!.Text = "OK";
                 call_state = "Call disconnected: " + ci.lastReason;
             }
             if (ci.state == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED)
@@ -252,8 +254,8 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
             }
         }
 
-        peerTxt.Text = ci.remoteUri;
-        statusTxt.Text = call_state;
+        peerTxt!.Text = ci.remoteUri;
+        statusTxt!.Text = call_state;
     }
 
     #region ISurfaceHolderCallback
@@ -275,7 +277,7 @@ public class CallPageHandler(IPropertyMapper mapper, CommandMapper commandMapper
         try { UpdateVideoWindow(false); }
         catch (Exception e) { System.Diagnostics.Debug.WriteLine("Error on SurfaceDestroyed: " + e.Message); }
     }
-    #endregion
+    #endregion 
     
 }
 #endif

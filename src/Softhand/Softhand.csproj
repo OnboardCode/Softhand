@@ -1,138 +1,207 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Softhand</RootNamespace>
-    <UseMaui>true</UseMaui>
-    <SingleProject>true</SingleProject>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <!-- Display name -->
-    <ApplicationTitle>Softhand</ApplicationTitle>
-    <!-- App Identifier -->
-    <ApplicationId>com.remotecodehub.softhand</ApplicationId>
-    <ApplicationIdGuid>08a662cf-ea61-4c72-8392-a7eeb5f38d26</ApplicationIdGuid>
-    <!-- Versions -->
-	<Version>0.0.1</Version>
-    <ApplicationDisplayVersion>0.0.1</ApplicationDisplayVersion>
-    <ApplicationVersion>001</ApplicationVersion>
-	<TargetPlatformMinVersion>21</TargetPlatformMinVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-	<AssemblyVersion>0.0.1</AssemblyVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-	<AssemblyName>Softhand.Android</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-	<AssemblyName>Softhand.iOS</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'iossimulator-arm64' Or '$(RuntimeIdentifier)' == 'iossimulator-x64'">
-	<RuntimeIdentifiers>iossimulator-arm64;iossimulator-x64;</RuntimeIdentifiers>
-	<ProvisioningType>manual</ProvisioningType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)|$(RuntimeIdentifier)'=='net9.0-ios|ios-arm64'">
-	<RuntimeIdentifiers>ios-arm64;</RuntimeIdentifiers>
-	<ProvisioningType>manual</ProvisioningType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)|$(RuntimeIdentifier)'=='net9.0-ios|iossimulator-x64'">
-    <CreatePackage>false</CreatePackage>
-    <TargetPlatformIdentifiers>iossimulator-x64</TargetPlatformIdentifiers>
-    <CodesignProvision>
-    </CodesignProvision>
-    <CodesignKey>Apple Development: weslleysgl@gmail.com (2SH2Q27TVY)</CodesignKey>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)|$(RuntimeIdentifier)'=='net9.0-ios|iossimulator-arm64'">
-    <CreatePackage>false</CreatePackage>
-    <TargetPlatformIdentifiers>iossimulator-x64</TargetPlatformIdentifiers>
-    <CodesignProvision>
-    </CodesignProvision>
-    <CodesignKey>Apple Development: weslleysgl@gmail.com (2SH2Q27TVY)</CodesignKey>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)|$(RuntimeIdentifier)'=='net9.0-ios|ios-arm64'">
-	<CreatePackage>false</CreatePackage>
-	<TargetPlatformIdentifiers>ios-arm64</TargetPlatformIdentifiers>
-	<CodesignProvision>
-	</CodesignProvision>
-	<CodesignKey>Apple Development: weslleysgl@gmail.com (2SH2Q27TVY)</CodesignKey>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
-    <CreatePackage>false</CreatePackage>
-    <AdditionalArgs></AdditionalArgs>
-    <NoWarn>1701;1702;CA1416</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)|$(Platform)'=='net9.0-android|AnyCPU'">
-    <AndroidManifest>Platforms\Android\Resources\AndroidManifest.xml</AndroidManifest>
-    <TargetFrameworkVersion>35</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
-    <NoWarn>1701;1702;CA1416;XA4301</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
-    <NoWarn>1701;1702;CA1416;XA4301</NoWarn>
-    <CodesignResourceRules />
-    <CodesignEntitlements />
-    <BuildIpa>False</BuildIpa>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
-    <NoWarn>1701;1702;CA1416;XA4301</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
-    <NoWarn>1701;1702;CA1416;XA4301</NoWarn>
-    <CodesignResourceRules />
-    <CodesignEntitlements />
-    <BuildIpa>False</BuildIpa>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
-    <CodesignKey>iPhone Developer</CodesignKey>
-    <ProvisioningType>manual</ProvisioningType>
-  </PropertyGroup>
-  <ItemGroup>
-    <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-    <!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-    <!-- Images -->
-    <MauiImage Include="Resources\Images\*" />
-    <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
-    <!-- Custom Fonts -->
-    <MauiFont Include="Resources\Fonts\*" />
-    <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
-    <PackageReference Include="libpjsua2maui" Version="2.15.1.3" />
-    <PackageReference Include="MediatR" Version="12.5.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.*" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.*" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.*" />
-	<PackageReference Include="UraniumUI.Dialogs.CommunityToolkit" Version="2.12.1" />
-	<PackageReference Include="UraniumUI.Dialogs.Mopups" Version="2.12.1" />
-    <PackageReference Include="UraniumUI.Icons.FontAwesome" Version="2.12.1" />
-    <PackageReference Include="UraniumUI.Icons.MaterialSymbols" Version="2.12.1" />
-    <PackageReference Include="UraniumUI.Material" Version="2.12.1" />
-  </ItemGroup>  
-  <ItemGroup>
-    <Folder Include="Application\Views\" />
-    <Folder Include="Platforms\Android\Resources\layout\" />
-    <Folder Include="Application\Controls\" />
-  </ItemGroup>  
-  <ItemGroup>
-    <Compile Update="Resources\Strings\Strings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Strings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>  
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings\Strings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-   
+	<PropertyGroup>
+		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Softhand</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!-- Display name -->
+		<ApplicationTitle>Softhand</ApplicationTitle>
+		<!-- App Identifier -->
+		<ApplicationId>com.remotecodehub.softhand</ApplicationId>
+		<ApplicationIdGuid>08a662cf-ea61-4c72-8392-a7eeb5f38d26</ApplicationIdGuid>
+		<!-- Versions -->
+		<ApplicationDisplayVersion>0.0.1</ApplicationDisplayVersion> 
+		<AssemblyVersion>0.0.1</AssemblyVersion>
+		<Version>0.0.1</Version>
+		<VersionPrefix>0.0</VersionPrefix>
+		<VersionSuffix>1</VersionSuffix>
+		<ApplicationVersion>001</ApplicationVersion>
+		<TargetPlatformMinVersion>21</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Deterministic>true</Deterministic>
+		<DebugType>portable</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
+		<IntermediateOutputPath>obj\$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<WarningLevel>4</WarningLevel>
+		<NoWarn>1701;1702;CA1416;XA4301</NoWarn>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TargetFramework>net9.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<!-- Configure Sentry org and project -->
+		<SentryOrg>remotecodehub</SentryOrg>
+		<SentryProject>softhand</SentryProject>
+		<!--Each of the below features are opt-in. Enable the features you wish to use.-->
+		<!-- Automatically creates a release when building your application. -->
+		<SentryCreateRelease>true</SentryCreateRelease>
+		<!-- Automatically associates commits with the release. -->
+		<SentrySetCommits>true</SentrySetCommits>
+		<!-- Optionally provide explicit flags to the set-commits command -->
+		<SentrySetCommitOptions>--local</SentrySetCommitOptions>
+		<!-- Sends symbols to Sentry, enabling symbolication of stack traces. -->
+		<SentryUploadSymbols>true</SentryUploadSymbols>
+		<!-- Sends sources to Sentry, enabling display of source context. -->
+		<SentryUploadSources>true</SentryUploadSources>
+		<!-- If you are targeting Android, sends proguard mapping file to Sentry. -->
+		<SentryUploadAndroidProguardMapping>true</SentryUploadAndroidProguardMapping>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AssemblyName>Softhand.Android</AssemblyName>
+		<AndroidManifest>Platforms\Android\Resources\AndroidManifest.xml</AndroidManifest>
+		<TargetFrameworkVersion>35</TargetFrameworkVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<AssemblyName>Softhand.iOS</AssemblyName>
+		<CreatePackage>false</CreatePackage>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'iossimulator-arm64' Or '$(RuntimeIdentifier)' == 'iossimulator-x64'">
+		<RuntimeIdentifiers>iossimulator-arm64;iossimulator-x64;</RuntimeIdentifiers>
+		<TargetPlatformIdentifiers>$(RuntimeIdentifier)</TargetPlatformIdentifiers>
+		<ProvisioningType>manual</ProvisioningType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)|$(RuntimeIdentifier)'=='net9.0-ios|ios-arm64'">
+		<RuntimeIdentifiers>ios-arm64;</RuntimeIdentifiers>
+		<TargetPlatformIdentifiers>ios-arm64</TargetPlatformIdentifiers>
+		<CodesignKey>iPhone Developer</CodesignKey>
+		<ProvisioningType>manual</ProvisioningType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>$(DefineConstants);DEV</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<DefineConstants>$(DefineConstants);PROD;</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="App.xaml.cs" />
+		<Compile Include="Application\Controls\CallView.cs" />
+		<Compile Include="Application\ViewModels\AVConfigPageViewModel.cs" />
+		<Compile Include="Application\ViewModels\BaseViewModel.cs" />
+		<Compile Include="Application\ViewModels\BuddyConfigPageViewModel.cs" />
+		<Compile Include="Application\ViewModels\BuddyPageViewModel.cs" />
+		<Compile Include="Application\ViewModels\CallPageViewModel.cs" />
+		<Compile Include="Application\ViewModels\ChatPageViewModel.cs" />
+		<Compile Include="Application\ViewModels\LoginPageViewModel.cs" />
+		<Compile Include="Application\ViewModels\MainPageViewModel.cs" />
+		<Compile Include="Application\ViewModels\SettingsPageViewModel.cs" />
+		<Compile Include="Application\Views\AccountConfigPage.xaml.cs" />
+		<Compile Include="Application\Views\AVConfigPage.xaml.cs" />
+		<Compile Include="Application\Views\BuddyConfigPage.xaml.cs" />
+		<Compile Include="Application\Views\BuddyPage.xaml.cs" />
+		<Compile Include="Application\Views\CallPage.xaml.cs" />
+		<Compile Include="Application\Views\ChatPage.xaml.cs" />
+		<Compile Include="Application\Views\LoginPage.xaml.cs" />
+		<Compile Include="Application\Views\MainPage.xaml.cs" />
+		<Compile Include="Application\Views\SettingsPage.xaml.cs" />
+		<Compile Include="Application\ViewModels\AccountConfigPageViewModel.cs" />
+		<Compile Include="AppShell.xaml.cs" />
+		<Compile Include="Domain\Abstractions\ISoftMonitor.cs" />
+		<Compile Include="Domain\Models\SoftAccount.cs" />
+		<Compile Include="Domain\Models\SoftAccountConfigModel.cs" />
+		<Compile Include="Domain\Models\SoftBuddy.cs" />
+		<Compile Include="Domain\Models\SoftCall.cs" />
+		<Compile Include="Domain\Models\SoftConfig.cs" />
+		<Compile Include="Domain\Models\SoftLogWriter.cs" />
+		<Compile Include="Globals.cs" />
+		<Compile Include="Infrastructure\Converters\SipStatusColorConverter.cs" />
+		<Compile Include="Infrastructure\Data\ApplicationDbContext.cs" />
+		<Compile Include="Infrastructure\Extensions\StringExtensions.cs" />
+		<Compile Include="Infrastructure\Messages\AddBuddyMessage.cs" />
+		<Compile Include="Infrastructure\Messages\EditBuddyMessage.cs" />
+		<Compile Include="Infrastructure\Messages\InitSelectedBuddyConfigMessage.cs" />
+		<Compile Include="Infrastructure\Messages\SaveAccountConfigMessage.cs" />
+		<Compile Include="Infrastructure\Messages\UpdateCallStateMessage.cs" />
+		<Compile Include="Infrastructure\Messages\UpdateMediaCallStateMessage.cs" />
+		<Compile Include="Infrastructure\Services\Abstract\INavigationContextService.cs" />
+		<Compile Include="Infrastructure\Services\Abstract\ISoftApp.cs" />
+		<Compile Include="Infrastructure\Services\Concrete\NavigationContextService.cs" />
+		<Compile Include="Infrastructure\Services\Concrete\SoftApp.cs" />
+		<Compile Include="MauiProgram.cs" />
+		<Compile Include="MauiProgramExtensions.cs" />
+		<Compile Include="Platforms\Android\CallPageHandler.cs" />
+		<Compile Include="Platforms\Android\MainActivity.cs" />
+		<Compile Include="Platforms\Android\MainApplication.cs" />
+		<Compile Include="Platforms\Android\SurfaceCallback.cs" />
+		<Compile Include="Platforms\iOS\AppDelegate.cs" />
+		<Compile Include="Platforms\iOS\CallPageHandler.cs" />
+		<Compile Include="Platforms\iOS\Program.cs" />
+		<Compile Include="Properties\AssemblyInfo.cs" />
+		<Compile Include="Routes.cs" />
+		<Compile Include="SofthandApplication.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
+		<PackageReference Include="libpjsua2maui" Version="2.15.1.3" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.*" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.*" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.*" />
+		<PackageReference Include="Sentry.Maui" Version="5.15.0" />
+		<PackageReference Include="UraniumUI.Dialogs.CommunityToolkit" Version="2.12.1" />
+		<PackageReference Include="UraniumUI.Dialogs.Mopups" Version="2.12.1" />
+		<PackageReference Include="UraniumUI.Icons.FontAwesome" Version="2.12.1" />
+		<PackageReference Include="UraniumUI.Icons.MaterialSymbols" Version="2.12.1" />
+		<PackageReference Include="UraniumUI.Material" Version="2.12.1" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Platforms\Android\Resources\layout\" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Resources\Strings\Strings.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Strings.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\Strings\Strings.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup>
+		<MauiXaml Update="Application\Views\ChatPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Application\Views\LoginPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Application\Views\MainPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Application\Views\SettingsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+	</ItemGroup>
 </Project>

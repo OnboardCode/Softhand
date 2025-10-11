@@ -13,22 +13,25 @@ public partial class AVConfigPageViewModel : BaseViewModel
     private SoftAccountConfigModel accountConfig = default!;
     
     [RelayCommand]
-    private void Init(SoftConfig inAccCfg = null)
+    private async Task Init(SoftConfig inAccCfg = null!)
     {
-        OkBtnTxt = "Save";
-        CancelBtnTxt = "Cancel";
-        Title = "Audio & Video";
-        this.AccountConfig = new SoftAccountConfigModel(inAccCfg);
+        await Task.Run(() =>
+        {
+            OkBtnTxt = "Save";
+            CancelBtnTxt = "Cancel";
+            Title = "Audio & Video";
+            this.AccountConfig = new SoftAccountConfigModel(inAccCfg);
+        });
     }
     [RelayCommand]
-    private void Save()
+    private static async Task Save()
     {
-        throw new NotImplementedException();
+        await Task.CompletedTask;
     }
     [RelayCommand]
-    private void Cancel()
+    private static async Task Cancel()
     {
-        throw new NotImplementedException();
+        await Task.CompletedTask;
     }
 }
 

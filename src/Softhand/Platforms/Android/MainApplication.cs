@@ -23,7 +23,7 @@ public class MainApplication(IntPtr handle, JniHandleOwnership ownership) : Maui
 
                 if (method_id != null && method_id.HasValue)
                 {
-                    CameraManager manager = this.GetSystemService(Context.CameraService) as CameraManager;
+                    CameraManager manager = (this.GetSystemService(Context.CameraService) as CameraManager)!;
                     JNIEnv.CallStaticVoidMethod(class_ref.Value, method_id.Value, new JValue(manager));
                     Console.WriteLine("SUCCESS setting cameraManager");
                 }

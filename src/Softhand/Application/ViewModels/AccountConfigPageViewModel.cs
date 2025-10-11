@@ -17,9 +17,9 @@ public partial class AccountConfigPageViewModel : BaseViewModel
     private SoftAccountConfigModel accountConfig = default!;
 
     [RelayCommand]
-    public void Init(SoftConfig inAccCfg)
+    public async Task Init(SoftConfig inAccCfg)
     {
-        this.AccountConfig = new SoftAccountConfigModel(inAccCfg);
+        await Task.Run(() => this.AccountConfig = new SoftAccountConfigModel(inAccCfg)) ;
     }
 
     [RelayCommand]

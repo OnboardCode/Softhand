@@ -1,4 +1,8 @@
-﻿namespace Softhand.Platforms.Android;
+﻿#if __ANDROID__
+using Android.Graphics;
+using Android.Views;
+
+namespace Softhand.Platforms.Android;
 
 class SurfaceCallback(CallPageHandler handler) : Java.Lang.Object, ISurfaceHolderCallback
 {
@@ -17,3 +21,5 @@ class SurfaceCallback(CallPageHandler handler) : Java.Lang.Object, ISurfaceHolde
         handler.OnSurfaceDestroyed(holder);
     }
 }
+
+#endif

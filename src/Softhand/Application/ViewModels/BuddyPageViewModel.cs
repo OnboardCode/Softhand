@@ -39,17 +39,18 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
         try
         {
             string config_path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            Dispatcher.GetForCurrentThread().Dispatch(() => _softApp.Init(this, config_path));
+            Dispatcher.GetForCurrentThread()?.Dispatch(() => _softApp.Init(this, config_path));
         }
         catch (Exception e)
         {
+            SentrySdk.CaptureException(e);
             _logger.LogError(e, "Error _softApp.Init: {Message}", e.Message);
         }
 
         WeakReferenceMessenger.Default.Register<SaveAccountConfigMessage>(this, (r, m) =>
         {
             var myCfg = m.Value;
-            SoftApp.CurrentConfig.AccountConfig.idUri = myCfg.IdUri;
+            SoftApp.CurrentConfig!.AccountConfig.idUri = myCfg.IdUri;
             SoftApp.CurrentConfig.AccountConfig.regConfig.registrarUri = myCfg.RegistrarUri;
             SoftApp.CurrentConfig.AccountConfig.sipConfig.proxies.Clear();
             if (myCfg.Proxy != "")
@@ -69,11 +70,12 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
 
             try
             {
-                SoftApp.Account.modify(SoftApp.CurrentConfig.AccountConfig);
+                SoftApp.Account!.modify(SoftApp.CurrentConfig.AccountConfig);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
+                _logger.LogError(e, "{Message}", e.Message);
             }
         });
 
@@ -82,11 +84,12 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
             var budCfg = m.Value;
             try
             {
-                SoftApp.Account.AddBuddy(budCfg);
+                SoftApp.Account!.AddBuddy(budCfg);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
+                _logger.LogError(e, "{Message}", e.Message);
             }
             this.LoadBuddiesCommand.Execute(null);
         });
@@ -97,14 +100,15 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
 
             if (this.SelectedBuddy != null)
             {
-                SoftApp.Account.DelBuddy(this.SelectedBuddy);
+                SoftApp.Account!.DelBuddy(this.SelectedBuddy);
                 try
                 {
                     SoftApp.Account.AddBuddy(budCfg);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    SentrySdk.CaptureException(e);
+                    _logger.LogError(e, "{Message}", e.Message);
                 }
                 this.LoadBuddiesCommand.Execute(null);
             }
@@ -128,7 +132,7 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
         if (SoftApp.CurrentCall == null || call.getId() != SoftApp.CurrentCall.getId())
             return;
 
-        CallInfo ci = null;
+        CallInfo ci = null!;
 
         try
         {
@@ -149,14 +153,15 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
         if (SoftApp.CurrentCall == null || call.getId() != SoftApp.CurrentCall.getId())
             return;
 
-        CallInfo ci = null;
+        CallInfo ci = null!;
         try
         {
             ci = call.getInfo();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            SentrySdk.CaptureException(e);
+            _logger.LogError(e, "{Message}", e.Message);
         }
 
         if (ci == null)
@@ -191,10 +196,11 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            SentrySdk.CaptureException(e);
+            _logger.LogError(e, "{Message}", e.Message);
         }
         SoftApp.CurrentCall = call;
-        Dispatcher.GetForCurrentThread().Dispatch(async () => { await Shell.Current.GoToAsync(new ShellNavigationState(Routes.CallPage), true); });
+        Dispatcher.GetForCurrentThread()?.Dispatch(async () => { await Shell.Current.GoToAsync(new ShellNavigationState(Routes.CallPage), true); });
     }
 
     public void NotifyRegState(int code, string reason, long expiration)
@@ -207,7 +213,7 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
 
     }
 
-    #endregion 
+    #endregion  
 
     #region Commands
     [RelayCommand]
@@ -224,9 +230,9 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
         IsBusy = true;
         if (this.SelectedBuddy != null)
         {
-            SoftApp.Account.DelBuddy(this.SelectedBuddy);
+            SoftApp.Account!.DelBuddy(this.SelectedBuddy);
             Buddies.Remove(SelectedBuddy);
-            SelectedBuddy = null;
+            SelectedBuddy = null!;
         }
         IsBusy = false;
     }
@@ -249,12 +255,12 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
         IsBusy = true;
         if (this.SelectedBuddy != null)
         {
-            SoftCall call = new(SoftApp.Account, -1);
+            SoftCall call = new(SoftApp.Account!, -1);
             CallOpParam prm = new(true);
 
             try
             {
-                await Dispatcher.GetForCurrentThread().DispatchAsync(() => call.makeCall(this.SelectedBuddy.Configuration.uri, prm));
+                await Dispatcher.GetForCurrentThread()!.DispatchAsync(() => call.makeCall(this.SelectedBuddy.Configuration.uri, prm));
             }
             catch (Exception ex)
             {
@@ -285,9 +291,10 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
         {
             _softApp.Deinit();
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
+            SentrySdk.CaptureException(e);
+            _logger.LogError(e, "{Message}", e.Message);
         }
         IsBusy = false;
     }
@@ -311,13 +318,14 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
         try
         {
             Buddies.Clear();
-            foreach (var buddy in SoftApp.Account.BuddyList)
+            foreach (var buddy in SoftApp.Account!.BuddyList)
             {
                 Buddies.Add(buddy);
             }
         }
         catch (Exception e)
         {
+            SentrySdk.CaptureException(e);
             _logger.LogError(e, "{Message}", e.Message);
         }
         finally
@@ -329,10 +337,10 @@ public partial class BuddyPageViewModel : BaseViewModel, ISoftMonitor
     #endregion
 
     #region Methods
-    static void DeleteCall(Object stateInfo)
+    static void DeleteCall(Object? stateInfo)
     {
         SoftApp.CurrentCall.Dispose();
-        SoftApp.CurrentCall = null;
+        SoftApp.CurrentCall = null!;
     }
 
     #endregion

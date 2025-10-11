@@ -45,10 +45,10 @@ public class SoftBuddy(BuddyConfig config) : Buddy
     }
     public override void onBuddyEvSubState(OnBuddyEvSubStateParam prm)
     {
-        SoftApp.Monitor.NotifyOnBuddyEvSubState(this, prm);
+        SoftApp.Monitor?.NotifyOnBuddyEvSubState(this, prm);
     }
     override public void onBuddyState()
     {
-        SoftApp.Monitor.NotifyBuddyState(this);
+        SoftApp.Monitor?.NotifyBuddyState(this);
     }
 }

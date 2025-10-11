@@ -55,6 +55,39 @@ public static class MauiProgramExtensions
         return builder;
     }
 
+    public static MauiAppBuilder AddSentry(this MauiAppBuilder builder)
+    {
+        builder.UseSentry(options =>
+        {
+            options.Dsn = "";
+
+            options.Experimental.EnableLogs = true;
+     
+            // Use debug mode if you want to see what the SDK is doing.
+            // Debug messages are written to stdout with Console.Writeline,
+            // and are viewable in your IDE's debug console or with 'adb logcat', etc.
+            // This option is not recommended when deploying your application.
+            options.Debug = true;
+            options.AttachScreenshot = true;
+            options.SampleRate = 1.0F;
+            options.TracesSampleRate = 1.0F; // Capture 70% of transactions for performance monitoring.
+                                             // We recommend adjusting this value in production.
+                                             // Other Sentry options can be set here.
+
+#if DEV
+            options.Environment = "development";
+#endif
+#if PROD
+            options.Environment = "production";
+#endif
+            options.CacheDirectoryPath = FileSystem.CacheDirectory;
+            options.MaxCacheItems = 100;
+            options.Release = AppInfo.VersionString;
+            options.DiagnosticLevel = SentryLevel.Debug;
+        });
+        return builder;
+    }
+
     public static MauiApp CreateMauiApp(this MauiAppBuilder builder) => builder
         .UseMauiApp<App>()
         .ConfigureUI()
@@ -62,6 +95,7 @@ public static class MauiProgramExtensions
         .AddLogging()
         .AddServices()
         .AddHandlers()
+        .AddSentry()
         .AddViewsAndViewModels()
         .Build();
 
